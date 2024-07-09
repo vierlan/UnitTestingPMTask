@@ -15,13 +15,10 @@ To run the tests, you can use the green play button in your Spec, or in terminal
 sbt test
 ```
 ----
-**Extension task:**
-1. Refactor the code with the corrected income tax bands, via: https://www.gov.uk/income-tax-rates
----
-**Extension task (hard):**
+**Extension task (1 - Hard):**
 1. Extend the task to calculate capital gains from shares
 2. Information on implementation can be found: https://taxscouts.com/the-tax-basics/capital-gains-tax-rates/
 ---
-Extension task (nigh impossible)
+**Extension task (2 - Really Hard):**
 1. Extend the task to calculate total income tax AND capital gains tax from shares
 2. You can create a new method that calls your existing methods to accomplish this
