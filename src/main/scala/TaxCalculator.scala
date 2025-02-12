@@ -4,9 +4,9 @@ class TaxCalculator {
   //lananh
 
   // Tax bands (simplified to make testing a bit easier)
-  private val personalAllowance: Int = 10000
-  private val basicRateLimit: Int = 50000
-  private val higherRateLimit: Int = 125000
+  private val personalAllowance: Int = 12570
+  private val basicRateLimit: Int = 50270
+  private val higherRateLimit: Int = 125140
 
   // Tax rates
   private val personalAllowanceRate: Double = 0
@@ -16,6 +16,7 @@ class TaxCalculator {
 
   // Max Band Rates
   private val basicMaxBand = (basicRateLimit - personalAllowance) * basicRate
+  private val basicMaxBandNoAllowance = (basicRateLimit) * basicRate
   private val higherMaxBand = (higherRateLimit - basicRateLimit) * higherRate
 
   // A method to calculate the total amount of tax to be paid, returned as a double
@@ -31,7 +32,7 @@ class TaxCalculator {
       basicMaxBand + taxPaidAtHigherRate
     } else {
       val taxPaidAtAdditionalRate = (income - higherRateLimit) * additionalRate
-      basicMaxBand + higherMaxBand + taxPaidAtAdditionalRate
+      basicMaxBandNoAllowance + higherMaxBand + taxPaidAtAdditionalRate
     }
   }
 
@@ -47,7 +48,7 @@ class TaxCalculator {
   // A method that will return a string with the income limit of their current tax band.
   // The return will also be formatted, E.g: "£12,500" or "No limit"
   def formattedCurrentTaxAllowance(income: Double): String = {
-    if (income < personalAllowance) {
+    if (income <= personalAllowance) {
       s"£$personalAllowance"
     } else if (income <= basicRateLimit) {
       s"£$basicRateLimit"
