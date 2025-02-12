@@ -20,37 +20,20 @@ class TaxCalculator {
 
   // A method to calculate the total amount of tax to be paid, returned as a double
   def calculateTax(income: Double): Double = {
-    val band = incomeBand(income)
-    if (band == "NoTax") {
+    val band = formattedCurrentTaxAllowance(income)
+    if (band == s"£$personalAllowance") {
       0
-    } else if (band == "BasicBand") {
+    } else if (band == s"£$basicRateLimit") {
       val taxToPay: Double = (income - personalAllowance) * basicRate
-      println(taxToPay)
       taxToPay
-    } else if (band == "HigherBand") {
+    } else if (band == s"£$higherRateLimit") {
       val taxPaidAtHigherRate: Double = (income - basicRateLimit) * higherRate
-      println(basicRateLimit,personalAllowance, basicRate)
-      println(basicMaxBand, taxPaidAtHigherRate)
       basicMaxBand + taxPaidAtHigherRate
     } else {
       val taxPaidAtAdditionalRate = (income - higherRateLimit) * additionalRate
-      println(taxPaidAtAdditionalRate)
       basicMaxBand + higherMaxBand + taxPaidAtAdditionalRate
     }
   }
-
-  def incomeBand(income: Double): String =
-    if (income < personalAllowance) {
-      "NoTax"
-    } else if (income <= basicRateLimit) {
-      "BasicBand"
-    } else if (income <= higherRateLimit) {
-      "HigherBand"
-    } else if (income > higherRateLimit) {
-      "AdditionalBand"
-    } else {
-      "error"
-    }
 
   // A method which can tell you if someone is a higher rate taxpayer
   def isHigherRateTaxpayer(income: Double): Boolean = {
@@ -60,7 +43,6 @@ class TaxCalculator {
       false
     }
   }
-
 
   // A method that will return a string with the income limit of their current tax band.
   // The return will also be formatted, E.g: "£12,500" or "No limit"
