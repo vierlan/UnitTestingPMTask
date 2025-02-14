@@ -2,8 +2,7 @@ import com.sun.tools.javac.util.Assert.error
 
 class TaxCalculator {
   //lananh
-
-  // Tax bands (simplified to make testing a bit easier)
+  // Tax bands
   private val personalAllowance: Int = 12570
   private val basicRateLimit: Int = 50270
   private val higherRateLimit: Int = 125140
@@ -13,6 +12,12 @@ class TaxCalculator {
   private val basicRate: Double = 0.2
   private val higherRate: Double = 0.4
   private val additionalRate: Double = 0.45
+
+  // Capital gains figures
+  private val CGTAllowance: Double = 3000
+  private val CGTLowerRate: Double = 18
+  private val CGTHigherRate: Double = 24
+  private val CGTThreshold: Double = 37700
 
   // Max Band Rates
   private val basicMaxBand = (basicRateLimit - personalAllowance) * basicRate
@@ -61,4 +66,35 @@ class TaxCalculator {
     }
   }
 
+def calculatedCapitalGains(capitalGainsIncome: Double, salary: Double): Double = {
+    val CGAfterAllowance = capitalGainsIncome - CGTAllowance
+    val salaryAfterAllowance = if (salary <= personalAllowance) {
+      0
+    } else {
+      salary - personalAllowance
+    }
+    val taxableIncome: Double = CGAfterAllowance + salaryAfterAllowance
+    if (capitalGainsIncome < CGTAllowance) {
+      0
+    } else if ( salaryAfterAllowance > CGTThreshold) {
+      val CGTPayable = (CGAfterAllowance * CGTHigherRate )/100
+      CGTPayable
+    } else if (taxableIncome <= CGTThreshold) {
+      val CGTTaxPayable = (CGAfterAllowance * CGTLowerRate)/100
+      CGTTaxPayable
+    } else {
+      //val amountAtLowerRate = taxableIncome - CGTThreshold
+      val amountAtHigherRate = taxableIncome - CGTThreshold
+      val amountAtLowerRate = (taxableIncome - amountAtHigherRate) - salaryAfterAllowance
+      val CGTPayableAtLowerRate = ( amountAtLowerRate * CGTLowerRate)/100
+      val CGTPayableAtHigherRate = (amountAtHigherRate * CGTHigherRate)/100
+      CGTPayableAtLowerRate + CGTPayableAtHigherRate
+    }
+}
+
+  def calculateBothTaxes(capitalGainsIncome: Double, salary: Double): Double =  {
+    val incomeTax: Double = calculateTax(salary)
+    val capitalGainsTax: Double = calculatedCapitalGains(capitalGainsIncome, salary)
+    incomeTax + capitalGainsTax
+  }
 }

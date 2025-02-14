@@ -55,4 +55,44 @@ class TaxCalculatorSpec extends AnyWordSpec {
       }
     }
   }
+
+  "calculatedCapitalGains" should {
+    "return calculation of Capital Gains Tax payable" when {
+      "combined income is less than threshold" in {
+        val result = taxCalculator.calculatedCapitalGains(20000, 30000)
+
+        assert(result == 3060)
+
+      }
+      "salary is less than threshold but combined income is more than threshold" in {
+        val result = taxCalculator.calculatedCapitalGains(30000, 40000)
+
+        assert(result.ceil == 5864)
+
+      }
+      "salary is more than threshold" in {
+        val result = taxCalculator.calculatedCapitalGains(30000, 70000)
+
+        assert(result == 6480)
+
+      }
+      "capital gains income is less than capital gains allowance" in {
+        val result = taxCalculator.calculatedCapitalGains(2900, 70000)
+
+        assert(result == 0)
+
+      }
+    }
+  }
+
+  "calculateBothTaxes" should {
+    "return total taxes payable for combined salary and capital gains income" when {
+
+      "salary is below personal threshold and CGT payable is above CGT threshold" in {
+        val result = taxCalculator.calculateBothTaxes(70000, 10000)
+
+        assert(result.ceil == 13818)
+      }
+    }
+  }
 }
